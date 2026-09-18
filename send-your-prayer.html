@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Send Your Prayer — CTG</title>
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="form-page">
+
+<a class="corner-btn logo-mark" href="admin.html" aria-label="Student council login"></a>
+
+<a class="back-link" href="index.html">&larr; Back</a>
+
+<div class="form-shell">
+  <div class="form-card">
+    <h2>Send Your Prayer</h2>
+    <p class="hint">Sent privately to the pastor and prayer team only. It is never shown publicly or answered on the board.</p>
+
+    <form id="prayer-form" novalidate>
+      <label class="field-label" for="message">Your prayer request</label>
+      <textarea id="message" name="message" placeholder="What would you like prayer for?" maxlength="4000" required></textarea>
+
+      <label class="field-label" for="name" style="margin-top:0.9rem;">Your name (optional)</label>
+      <input class="name-field" type="text" id="name" name="name" maxlength="80" placeholder="Leave blank to stay anonymous">
+
+      <div class="form-actions">
+        <button type="submit" class="btn" id="submit-btn">Send prayer</button>
+        <a href="index.html" class="btn secondary">Cancel</a>
+      </div>
+
+      <div class="confirm-msg" id="confirm-msg" role="status">Sent privately. You are held in thought.</div>
+      <div class="confirm-msg error" id="error-msg" role="status"></div>
+    </form>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="app.js"></script>
+<script>
+  const form = document.getElementById('prayer-form');
+  const confirmMsg = document.getElementById('confirm-msg');
+  const errorMsg = document.getElementById('error-msg');
+  const submitBtn = document.getElementById('submit-btn');
+
+  function showError(err) {
+    const d = describeFirebaseError(err);
+    console.error('[CTG]', err);
+    errorMsg.innerHTML = escapeHtml(d.title) + ' \u2014 ' + escapeHtml(d.fix) +
+      (err && err.code ? ' <code>' + escapeHtml(err.code) + '</code>' : '');
+    errorMsg.classList.add('show');
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const message = document.getElementById('message').value.trim();
+    if (!message) return;
+    const name = document.getElementById('name').value;
+
+    if (!CONFIG_OK) {
+      showError({ code: 'config-missing',
+        message: 'firebase-config.js did not load.' });
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+    errorMsg.classList.remove('show');
+    try {
+      await PrayerBoard.addSubmission({ type: 'prayer', name, message });
+      form.reset();
+      confirmMsg.classList.add('show');
+      setTimeout(() => confirmMsg.classList.remove('show'), 6000);
+    } catch (err) {
+      showError(err);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send prayer';
+    }
+  });
+</script>
+</body>
+</html>

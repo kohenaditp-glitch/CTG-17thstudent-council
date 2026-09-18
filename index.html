@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CTG — 17th Student Council</title>
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="corner-btn logo-mark" href="admin.html" aria-label="Student council login"></a>
+
+<header class="site-header">
+  <span class="eyebrow">17th Student Council</span>
+  <h1>CTG</h1>
+  <p class="tagline">Closer To God</p>
+  <p class="tagline">하나님께 더 가까이</p>
+</header>
+
+<nav class="doors" aria-label="Main actions">
+  <a class="door" href="ask-the-pastor.html">
+    <h2>Ask the Pastor</h2>
+    <p>Private Q&amp;A</p>
+  </a>
+  <a class="door" href="send-your-prayer.html">
+    <h2>Send Your Prayer</h2>
+    <p>Private request</p>
+  </a>
+</nav>
+
+<section class="board-section" aria-labelledby="board-heading">
+  <div class="board-wrap">
+    <h2 class="board-heading" id="board-heading">Answered</h2>
+
+    <div class="trouble" id="trouble" role="status"></div>
+
+    <div class="ledger" id="ledger"></div>
+    <p class="board-empty" id="board-empty" hidden>Nothing posted yet — check back soon.</p>
+  </div>
+</section>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="app.js"></script>
+<script>
+  const ledger = document.getElementById('ledger');
+  const boardEmpty = document.getElementById('board-empty');
+
+  function renderBoard(items) {
+    hideTrouble('trouble');
+
+    if (!items.length) {
+      ledger.innerHTML = '';
+      boardEmpty.hidden = false;
+      return;
+    }
+    boardEmpty.hidden = true;
+
+    ledger.innerHTML = items.map(item => `
+      <div class="ledger-item" data-open="false" data-id="${item.id}">
+        <button class="ledger-question" aria-expanded="false">
+          <span class="ledger-flame" aria-hidden="true"></span>
+          <span class="ledger-question-text">${escapeHtml(item.question)}</span>
+          <span class="ledger-caret" aria-hidden="true">&#9656;</span>
+        </button>
+        <div class="ledger-answer">
+          <div class="ledger-answer-inner">${escapeHtml(item.answer)}</div>
+        </div>
+      </div>
+    `).join('');
+
+    ledger.querySelectorAll('.ledger-question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const parent = btn.closest('.ledger-item');
+        const isOpen = parent.getAttribute('data-open') === 'true';
+        parent.setAttribute('data-open', String(!isOpen));
+        btn.setAttribute('aria-expanded', String(!isOpen));
+      });
+    });
+  }
+
+  if (CONFIG_OK) {
+    PrayerBoard.onBoard(renderBoard, err => showTrouble('trouble', err));
+  } else {
+    showTrouble('trouble', { code: 'config-missing',
+      message: 'firebase-config.js did not load. Make sure it is in the same folder as this page.' });
+  }
+</script>
+</body>
+</html>

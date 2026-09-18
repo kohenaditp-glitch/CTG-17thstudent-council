@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Council Login — CTG</title>
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="admin-page">
+
+<!-- ================= LOGIN GATE ================= -->
+<div class="admin-gate" id="gate">
+  <div class="admin-gate-card">
+    <div class="gate-logo logo-mark" role="img" aria-label="CTG logo"></div>
+    <h1>Student Council Login</h1>
+    <form id="gate-form" novalidate>
+      <input type="email" id="gate-email" placeholder="Email" autocomplete="username">
+      <input type="password" id="gate-password" placeholder="Password" autocomplete="current-password">
+      <div class="admin-gate-error" id="gate-error"></div>
+      <button type="submit" class="btn" id="gate-btn" style="width:100%;">Enter</button>
+    </form>
+    <p class="gate-note">
+      Accounts are created in the Firebase console — see SETUP.md. There is no public sign-up.
+    </p>
+  </div>
+</div>
+
+<!-- ================= ADMIN VIEW ================= -->
+<div class="admin-shell" id="shell">
+  <div class="admin-top">
+    <h1>Database</h1>
+    <button class="logout-link" id="logout">Log out</button>
+  </div>
+
+  <!-- Connection check — tells you exactly what is and isn't working -->
+  <div class="checklist" id="checklist">
+    <strong>Connection check</strong>
+    <ul>
+      <li><span class="wait" id="chk-auth-icon">•</span>
+          <span>Signed in <span id="chk-uid" style="color:var(--text-muted);"></span></span></li>
+      <li><span class="wait" id="chk-board-icon">•</span>
+          <span id="chk-board-text">Reading the public board…</span></li>
+      <li><span class="wait" id="chk-subs-icon">•</span>
+          <span id="chk-subs-text">Reading private submissions…</span></li>
+    </ul>
+  </div>
+
+  <div class="trouble" id="trouble" role="status"></div>
+
+  <section class="admin-section">
+    <h2>Questions</h2>
+    <div id="questions-list"></div>
+    <p class="empty-note" id="questions-empty" hidden>No new questions right now.</p>
+  </section>
+
+  <section class="admin-section">
+    <h2>Prayer requests</h2>
+    <p class="empty-note" style="margin-bottom:0.9rem;">Private only — these are never answered or posted publicly. Check them off once read.</p>
+    <div id="prayers-list"></div>
+    <p class="empty-note" id="prayers-empty" hidden>No prayer requests right now.</p>
+  </section>
+
+  <section class="admin-section">
+    <h2>Board (visible to everyone)</h2>
+    <div id="board-list"></div>
+    <p class="empty-note" id="board-empty" hidden>Nothing posted to the board yet.</p>
+
+    <div class="new-board-form">
+      <strong>Post something new directly</strong>
+      <label for="new-question">Question</label>
+      <input type="text" id="new-question" placeholder="e.g. How do I start reading the Bible?">
+      <label for="new-answer">Answer</label>
+      <textarea id="new-answer" placeholder="The pastor's answer…"></textarea>
+      <div style="margin-top:0.9rem;">
+        <button class="btn" id="add-board-btn" style="padding:0.6rem 1.1rem;font-size:0.88rem;">Add to board</button>
+      </div>
+    </div>
+  </section>
+
+  <a class="back-link" href="index.html" style="margin-left:0;">&larr; Back to public site</a>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="app.js"></script>
+<script>
+  const gate = document.getElementById('gate');
+  const shell = document.getElementById('shell');
+  const gateForm = document.getElementById('gate-form');
+  const gateBtn = document.getElementById('gate-btn');
+  const gateError = document.getElementById('gate-error');
+
+  let unsubSubmissions = null, unsubBoard = null;
+
+  function mark(id, state, text, textId) {
+    const icon = document.getElementById(id);
+    icon.className = state;                       // 'ok' | 'bad' | 'wait'
+    icon.textContent = state === 'ok' ? '✓' : state === 'bad' ? '✕' : '•';
+    if (text && textId) document.getElementById(textId).textContent = text;
+  }
+
+  /* ---------------- Listeners ---------------- */
+
+  function startListening() {
+    unsubSubmissions = PrayerBoard.onSubmissions(
+      all => {
+        mark('chk-subs-icon', 'ok', 'Private submissions: readable', 'chk-subs-text');
+        hideTrouble('trouble');
+        renderQuestions(all.filter(s => s.type === 'ask'));
+        renderPrayers(all.filter(s => s.type === 'prayer'));
+      },
+      err => {
+        mark('chk-subs-icon', 'bad', 'Private submissions: blocked', 'chk-subs-text');
+        showTrouble('trouble', err);
+      }
+    );
+
+    unsubBoard = PrayerBoard.onBoard(
+      items => {
+        mark('chk-board-icon', 'ok', 'Public board: readable', 'chk-board-text');
+        renderBoard(items);
+      },
+      err => {
+        mark('chk-board-icon', 'bad', 'Public board: blocked', 'chk-board-text');
+        showTrouble('trouble', err);
+      }
+    );
+  }
+
+  function stopListening() {
+    if (unsubSubmissions) unsubSubmissions();
+    if (unsubBoard) unsubBoard();
+    unsubSubmissions = unsubBoard = null;
+  }
+
+  function showAdmin(user) {
+    gate.style.display = 'none';
+    shell.classList.add('show');
+    mark('chk-auth-icon', 'ok');
+    document.getElementById('chk-uid').textContent = '(UID ' + user.uid + ')';
+    startListening();
+  }
+
+  function showGate() {
+    stopListening();
+    shell.classList.remove('show');
+    gate.style.display = 'flex';
+  }
+
+  if (CONFIG_OK) {
+    // Firebase restores the session on reload by itself.
+    PrayerBoard.onAuthChange(user => { if (user) showAdmin(user); else showGate(); });
+  } else {
+    gateError.textContent = 'firebase-config.js did not load. Check that it is in this folder.';
+    gateError.classList.add('show');
+  }
+
+  gateForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('gate-email').value.trim();
+    const password = document.getElementById('gate-password').value;
+    gateError.classList.remove('show');
+    gateBtn.disabled = true;
+    gateBtn.textContent = 'Checking…';
+    try {
+      await PrayerBoard.signIn(email, password);
+    } catch (err) {
+      console.error('[CTG]', err);
+      const c = err.code || '';
+      gateError.textContent =
+        (c === 'auth/invalid-credential' || c === 'auth/wrong-password' || c === 'auth/user-not-found')
+          ? "Email or password isn't right. Try again."
+        : (c === 'auth/operation-not-allowed')
+          ? 'Email/password sign-in is still switched off in the Firebase console (step 5 of SETUP.md).'
+        : (c === 'auth/network-request-failed')
+          ? "Couldn't reach Firebase. Check your connection."
+        : (describeFirebaseError(err).title + ' (' + c + ')');
+      gateError.classList.add('show');
+    } finally {
+      gateBtn.disabled = false;
+      gateBtn.textContent = 'Enter';
+    }
+  });
+
+  document.getElementById('logout').addEventListener('click', () => PrayerBoard.signOut());
+
+  /* ---------------- Questions ---------------- */
+
+  function renderQuestions(items) {
+    const list = document.getElementById('questions-list');
+    const empty = document.getElementById('questions-empty');
+
+    if (!items.length) { list.innerHTML = ''; empty.hidden = false; return; }
+    empty.hidden = true;
+
+    list.innerHTML = items.map(item => `
+      <div class="sub-item" data-id="${item.id}">
+        <div class="meta">
+          <span class="tag">Question</span>
+          <span>${item.name ? escapeHtml(item.name) : 'Anonymous'}</span>
+          <span>&middot;</span>
+          <span>${formatDate(item.date)}</span>
+        </div>
+        <div class="body">${escapeHtml(item.message)}</div>
+        <div class="row-actions">
+          <button class="mini-btn publish" data-action="open-answer">Answer &amp; post to board</button>
+          <button class="mini-btn" data-action="delete">Delete</button>
+        </div>
+        <div class="answer-box">
+          <label class="field-mini">The pastor's answer</label>
+          <textarea placeholder="Write the answer that will appear on the public board…"></textarea>
+          <div class="row-actions">
+            <button class="mini-btn publish" data-action="post">Post to board</button>
+            <button class="mini-btn" data-action="cancel-answer">Cancel</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    list.querySelectorAll('[data-action="open-answer"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const box = btn.closest('.sub-item').querySelector('.answer-box');
+        box.classList.add('show');
+        box.querySelector('textarea').focus();
+      });
+    });
+
+    list.querySelectorAll('[data-action="cancel-answer"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.closest('.answer-box').classList.remove('show');
+      });
+    });
+
+    list.querySelectorAll('[data-action="post"]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const card = btn.closest('.sub-item');
+        const answer = card.querySelector('.answer-box textarea').value;
+        if (!answer.trim()) { alert('Write an answer before posting.'); return; }
+        btn.disabled = true;
+        btn.textContent = 'Posting…';
+        try {
+          await PrayerBoard.publishSubmissionToBoard(card.dataset.id, answer);
+        } catch (err) {
+          showTrouble('trouble', err);
+          btn.disabled = false;
+          btn.textContent = 'Post to board';
+        }
+      });
+    });
+
+    list.querySelectorAll('[data-action="delete"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.closest('.sub-item').dataset.id;
+        if (confirm('Delete this question? This cannot be undone.')) {
+          PrayerBoard.deleteSubmission(id).catch(err => showTrouble('trouble', err));
+        }
+      });
+    });
+  }
+
+  /* ---------------- Prayer requests (private, view + seen only) ---------------- */
+
+  function renderPrayers(items) {
+    const list = document.getElementById('prayers-list');
+    const empty = document.getElementById('prayers-empty');
+
+    if (!items.length) { list.innerHTML = ''; empty.hidden = false; return; }
+    empty.hidden = true;
+
+    list.innerHTML = items.map(item => `
+      <div class="sub-item ${item.seen ? 'is-seen' : ''}" data-id="${item.id}">
+        <div class="meta">
+          <span class="tag">Prayer</span>
+          <span>${item.name ? escapeHtml(item.name) : 'Anonymous'}</span>
+          <span>&middot;</span>
+          <span>${formatDate(item.date)}</span>
+        </div>
+        <div class="body">${escapeHtml(item.message)}</div>
+        <div class="row-actions">
+          <label class="seen-checkbox">
+            <input type="checkbox" data-action="seen" ${item.seen ? 'checked' : ''}>
+            Seen
+          </label>
+          <button class="mini-btn" data-action="delete">Delete</button>
+        </div>
+      </div>
+    `).join('');
+
+    list.querySelectorAll('[data-action="seen"]').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const id = cb.closest('.sub-item').dataset.id;
+        PrayerBoard.setSubmissionSeen(id, cb.checked).catch(err => showTrouble('trouble', err));
+      });
+    });
+
+    list.querySelectorAll('[data-action="delete"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.closest('.sub-item').dataset.id;
+        if (confirm('Delete this prayer request? This cannot be undone.')) {
+          PrayerBoard.deleteSubmission(id).catch(err => showTrouble('trouble', err));
+        }
+      });
+    });
+  }
+
+  /* ---------------- Board editor ---------------- */
+
+  function renderBoard(items) {
+    const list = document.getElementById('board-list');
+    const empty = document.getElementById('board-empty');
+
+    if (!items.length) { list.innerHTML = ''; empty.hidden = false; return; }
+    empty.hidden = true;
+
+    list.innerHTML = items.map(item => `
+      <div class="sub-item board-editor-item" data-id="${item.id}">
+        <div class="meta"><span>${formatDate(item.date)}</span></div>
+        <label class="field-mini">Question</label>
+        <input type="text" class="edit-question" value="${escapeHtml(item.question)}">
+        <label class="field-mini">Answer</label>
+        <textarea class="edit-answer">${escapeHtml(item.answer)}</textarea>
+        <div class="row-actions">
+          <button class="mini-btn publish" data-action="save">Save changes</button>
+          <button class="mini-btn" data-action="delete">Remove from board</button>
+        </div>
+      </div>
+    `).join('');
+
+    list.querySelectorAll('[data-action="save"]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const card = btn.closest('.board-editor-item');
+        try {
+          await PrayerBoard.updateBoardEntry(card.dataset.id, {
+            question: card.querySelector('.edit-question').value,
+            answer: card.querySelector('.edit-answer').value,
+          });
+          btn.textContent = 'Saved';
+          setTimeout(() => btn.textContent = 'Save changes', 1200);
+        } catch (err) { showTrouble('trouble', err); }
+      });
+    });
+
+    list.querySelectorAll('[data-action="delete"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.closest('.board-editor-item').dataset.id;
+        if (confirm('Remove this from the public board?')) {
+          PrayerBoard.deleteBoardEntry(id).catch(err => showTrouble('trouble', err));
+        }
+      });
+    });
+  }
+
+  document.getElementById('add-board-btn').addEventListener('click', async () => {
+    const qEl = document.getElementById('new-question');
+    const aEl = document.getElementById('new-answer');
+    if (!qEl.value.trim() || !aEl.value.trim()) {
+      alert('Fill in both the question and the answer.');
+      return;
+    }
+    try {
+      await PrayerBoard.addBoardEntry({ question: qEl.value, answer: aEl.value });
+      qEl.value = ''; aEl.value = '';
+    } catch (err) { showTrouble('trouble', err); }
+  });
+</script>
+</body>
+</html>

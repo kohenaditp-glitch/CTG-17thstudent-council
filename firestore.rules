@@ -1,0 +1,40 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ----- Who counts as an admin -----
+    // Paste the User UID of each student council account here.
+    // Find them in: Firebase console > Authentication > Users > "User UID".
+    // Keep the quotes and the commas.
+    function isAdmin() {
+      return request.auth != null && request.auth.uid in [
+        'PASTE_YOUR_UID_HERE'
+      ];
+    }
+
+    // ----- Private: questions and prayer requests -----
+    match /submissions/{doc} {
+
+      // Anyone may send one in, but it has to look like a real submission.
+      allow create: if request.resource.data.keys().hasOnly(
+                          ['type', 'name', 'message', 'date', 'seen'])
+                    && request.resource.data.type in ['ask', 'prayer']
+                    && request.resource.data.message is string
+                    && request.resource.data.message.size() > 0
+                    && request.resource.data.message.size() < 5000
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() < 100
+                    && request.resource.data.seen == false;
+
+      // Only listed admins can ever read them back.
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ----- Public: the answered board -----
+    match /board/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
