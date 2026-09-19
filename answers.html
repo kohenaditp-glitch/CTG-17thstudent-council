@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CTG — Global Vision Christian School - Mungyeong Campus</title>
+<title>Answers — CTG</title>
 <link rel="icon" href="favicon.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,47 +12,32 @@
 </head>
 <body>
 
-<nav class="site-nav" aria-label="Site">
-  <a class="nav-logo-link logo-mark" href="admin.html" aria-label="Student council login"></a>
+<header class="simple-header">
+  <nav class="site-nav" aria-label="Site">
+    <a class="nav-logo-link logo-mark" href="admin.html" aria-label="Student council login"></a>
   <div class="school-name">Global Vision Christian School - Mungyeong Campus</div>
-  <div class="nav-links">
-    <a class="nav-link is-current" href="index.html" data-i18n="nav_home">Home</a>
-    <a class="nav-link" href="answers.html" data-i18n="nav_answers">Answers</a>
-    <button class="lang-toggle" type="button" aria-label="Switch language">
-      <span data-code="en">EN</span><span data-code="ko">KO</span>
-    </button>
-  </div>
-</nav>
-
-<header class="site-header">
-  <span class="eyebrow" data-i18n="site_eyebrow">17th Student Council</span>
-  <h1>CTG</h1>
-  <p class="tagline" data-i18n="site_tagline1">Closer To God</p>
-  
+    <div class="nav-links">
+      <a class="nav-link" href="index.html" data-i18n="nav_home">Home</a>
+      <a class="nav-link is-current" href="answers.html" data-i18n="nav_answers">Answers</a>
+      <button class="lang-toggle" type="button" aria-label="Switch language">
+        <span data-code="en">EN</span><span data-code="ko">KO</span>
+      </button>
+    </div>
+  </nav>
 </header>
 
-<nav class="doors" aria-label="Main actions">
-  <a class="door" href="ask-the-pastor.html">
-    <h2 data-i18n="door_ask_title">Ask the Pastor</h2>
-    <p data-i18n="door_ask_sub">Private Q&amp;A</p>
-  </a>
-  <a class="door" href="send-your-prayer.html">
-    <h2 data-i18n="door_prayer_title">Send Your Prayer</h2>
-    <p data-i18n="door_prayer_sub">Private request</p>
-  </a>
-</nav>
+<section class="board-section" aria-labelledby="board-heading">
+  <div class="archive-controls">
+    <input type="search" id="search" data-i18n-placeholder="search_placeholder" placeholder="Search…">
+  </div>
 
-<section class="new-section" aria-labelledby="new-heading">
-  <div class="new-wrap">
-    <h2 class="new-heading" id="new-heading" data-i18n="new_heading">New this week</h2>
+  <div class="board-wrap">
+    <h2 class="board-heading" id="board-heading" data-i18n="answers_heading">Answered</h2>
 
     <div class="trouble" id="trouble" role="status"></div>
 
     <div class="ledger" id="ledger"></div>
-    <p class="new-empty-note" id="new-empty" hidden>
-      <span data-i18n="new_empty">Nothing new this week —</span>
-      <a href="answers.html" data-i18n="new_empty_link">browse all answers</a>
-    </p>
+    <p class="board-empty" id="board-empty" hidden data-i18n="answers_empty">Nothing posted yet — check back soon.</p>
   </div>
 </section>
 
@@ -64,8 +49,9 @@
 <script src="i18n.js"></script>
 <script>
   const ledger = document.getElementById('ledger');
-  const newEmpty = document.getElementById('new-empty');
-  let latestItems = [];
+  const boardEmpty = document.getElementById('board-empty');
+  const search = document.getElementById('search');
+  let allItems = [];
 
   function currentLangFields() {
     const lang = getLang();
@@ -75,21 +61,27 @@
   }
 
   function render() {
-    const items = latestItems.filter(item => isWithinDays(item.date, 7));
     const { q, a } = currentLangFields();
+    const badgeText = DICT[getLang()].badge_new;
+    const term = search.value.trim().toLowerCase();
+    const items = term
+      ? allItems.filter(item =>
+          (item[q] || '').toLowerCase().includes(term) ||
+          (item[a] || '').toLowerCase().includes(term))
+      : allItems;
 
     if (!items.length) {
       ledger.innerHTML = '';
-      newEmpty.hidden = false;
+      boardEmpty.hidden = false;
       return;
     }
-    newEmpty.hidden = true;
+    boardEmpty.hidden = true;
 
     ledger.innerHTML = items.map(item => `
       <div class="ledger-item" data-open="false" data-id="${item.id}">
         <button class="ledger-question" aria-expanded="false">
           <span class="ledger-flame" aria-hidden="true"></span>
-          <span class="ledger-question-text">${escapeHtml(item[q])}</span>
+          <span class="ledger-question-text">${escapeHtml(item[q])}${isWithinDays(item.date, 7) ? '<span class="new-badge">' + escapeHtml(badgeText) + '</span>' : ''}</span>
           <span class="ledger-caret" aria-hidden="true">&#9656;</span>
         </button>
         <div class="ledger-answer">
@@ -111,7 +103,7 @@
   if (CONFIG_OK) {
     PrayerBoard.onBoard(items => {
       hideTrouble('trouble');
-      latestItems = items;
+      allItems = items;
       render();
     }, err => showTrouble('trouble', err));
   } else {
@@ -119,6 +111,7 @@
       message: 'firebase-config.js did not load. Make sure it is in the same folder as this page.' });
   }
 
+  search.addEventListener('input', render);
   document.addEventListener('ctg-lang-changed', render);
 </script>
 </body>

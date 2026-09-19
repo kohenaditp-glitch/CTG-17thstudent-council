@@ -7,33 +7,41 @@
 <link rel="icon" href="favicon.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body class="form-page">
 
-<a class="corner-btn logo-mark" href="admin.html" aria-label="Student council login"></a>
-
-<a class="back-link" href="index.html">&larr; Back</a>
+<nav class="site-nav" aria-label="Site">
+  <a class="nav-logo-link logo-mark" href="admin.html" aria-label="Student council login"></a>
+  <div class="school-name">Global Vision Christian School - Mungyeong Campus</div>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html" data-i18n="nav_home">Home</a>
+    <a class="nav-link" href="answers.html" data-i18n="nav_answers">Answers</a>
+    <button class="lang-toggle" type="button" aria-label="Switch language">
+      <span data-code="en">EN</span><span data-code="ko">KO</span>
+    </button>
+  </div>
+</nav>
 
 <div class="form-shell">
   <div class="form-card">
-    <h2>Send Your Prayer</h2>
-    <p class="hint">Sent privately to the pastor and prayer team only. It is never shown publicly or answered on the board.</p>
+    <h2 data-i18n="prayer_title">Send Your Prayer</h2>
+    <p class="hint" data-i18n="prayer_hint">Sent privately to the pastor and prayer team only. It is never shown publicly or answered on the board.</p>
 
     <form id="prayer-form" novalidate>
-      <label class="field-label" for="message">Your prayer request</label>
-      <textarea id="message" name="message" placeholder="What would you like prayer for?" maxlength="4000" required></textarea>
+      <label class="field-label" for="message" data-i18n="prayer_label">Your prayer request</label>
+      <textarea id="message" name="message" data-i18n-placeholder="prayer_placeholder" placeholder="What would you like prayer for?" maxlength="4000" required></textarea>
 
-      <label class="field-label" for="name" style="margin-top:0.9rem;">Your name (optional)</label>
-      <input class="name-field" type="text" id="name" name="name" maxlength="80" placeholder="Leave blank to stay anonymous">
+      <label class="field-label" for="name" style="margin-top:0.9rem;" data-i18n="name_label">Your name (optional)</label>
+      <input class="name-field" type="text" id="name" name="name" maxlength="80" data-i18n-placeholder="name_placeholder" placeholder="Leave blank to stay anonymous">
 
       <div class="form-actions">
-        <button type="submit" class="btn" id="submit-btn">Send prayer</button>
-        <a href="index.html" class="btn secondary">Cancel</a>
+        <button type="submit" class="btn" id="submit-btn" data-i18n="send_prayer">Send prayer</button>
+        <a href="index.html" class="btn secondary" data-i18n="cancel">Cancel</a>
       </div>
 
-      <div class="confirm-msg" id="confirm-msg" role="status">Sent privately. You are held in thought.</div>
+      <div class="confirm-msg" id="confirm-msg" role="status" data-i18n="prayer_confirm">Sent privately. You are held in thought.</div>
       <div class="confirm-msg error" id="error-msg" role="status"></div>
     </form>
   </div>
@@ -44,6 +52,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script src="app.js"></script>
+<script src="i18n.js"></script>
 <script>
   const form = document.getElementById('prayer-form');
   const confirmMsg = document.getElementById('confirm-msg');
@@ -65,13 +74,13 @@
     const name = document.getElementById('name').value;
 
     if (!CONFIG_OK) {
-      showError({ code: 'config-missing',
-        message: 'firebase-config.js did not load.' });
+      showError({ code: 'config-missing', message: 'firebase-config.js did not load.' });
       return;
     }
 
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending…';
+    const original = submitBtn.textContent;
+    submitBtn.textContent = getLang() === 'ko' ? '보내는 중…' : 'Sending…';
     errorMsg.classList.remove('show');
     try {
       await PrayerBoard.addSubmission({ type: 'prayer', name, message });
@@ -82,7 +91,7 @@
       showError(err);
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Send prayer';
+      submitBtn.textContent = original;
     }
   });
 </script>
