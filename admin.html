@@ -2,114 +2,111 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>CTG Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Council Login — CTG</title>
 <link rel="icon" href="favicon.png" type="image/png">
-<link rel="stylesheet" href="styles.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
-<style>
-:root{--blue:#4d9cff;--coral:#ff6f61;--amber:#ffc857;--ink:#18253d}
-body.admin-page{font-family:Poppins,system-ui,sans-serif;background:#eef7ff;color:var(--ink)}
-.admin-shell{max-width:1100px;margin:auto;padding:1rem 1.25rem 5rem}.admin-shell:not(.show){display:none}
-.admin-sticky{position:sticky;top:0;z-index:100;background:rgba(238,247,255,.96);backdrop-filter:blur(12px);padding:.8rem 0 .65rem;box-shadow:0 8px 24px rgba(40,80,130,.10)}
-.admin-top{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:.65rem}.admin-top h1{margin:0;font-size:clamp(1.5rem,4vw,2.2rem)}
-.connection{background:#fff;border-radius:14px;padding:.65rem .8rem;box-shadow:0 3px 12px rgba(20,50,90,.07);font-size:.75rem}.connection strong{display:block;margin-bottom:.2rem}.connection ul{display:flex;gap:1rem;flex-wrap:wrap;list-style:none;margin:0;padding:0}.connection .ok{color:#1a9b68}.connection .bad{color:#d23d3d}.connection .wait{color:#9aa7b8}
-.trouble{display:none;background:#fff0ed;border:1px solid #ffb0a6;padding:.8rem;border-radius:12px;margin:1rem 0}.trouble.show{display:block}
-.admin-tabs{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap;margin-top:.7rem}.admin-tab-btn{border:0;background:#fff;padding:.65rem .85rem;border-radius:12px;cursor:pointer;font:700 .82rem Poppins;box-shadow:0 3px 12px rgba(20,50,90,.08)}.admin-tab-btn.is-active{background:var(--blue);color:#fff}
-.badge{display:inline-flex;min-width:19px;height:19px;align-items:center;justify-content:center;border-radius:99px;background:var(--coral);color:#fff;font-size:.68rem;margin-left:.25rem}
-.trash-main{margin-left:auto;min-width:48px;height:48px;border:0;background:#fff;border-radius:14px;cursor:pointer;font-size:1.6rem;box-shadow:0 4px 14px rgba(20,50,90,.12);transition:.16s}.trash-main.open{transform:translateY(-2px) rotate(-2deg);background:#fff4d8}.trash-main .lid{display:inline-block;transition:transform .16s;transform-origin:50% 85%}.trash-main.open .lid{transform:rotate(-28deg) translate(-2px,-2px)}
-.admin-tab-panel{display:none;padding-top:1rem}.admin-tab-panel.is-active{display:block}
-.sub-item{position:relative;background:#fff;border-radius:18px;padding:1rem 1rem 1rem 1.2rem;margin:.8rem 0;box-shadow:0 8px 24px rgba(35,70,120,.09);border-left:5px solid #8ec5ff;transition:.18s}.sub-item.unread{border-left-color:var(--coral);box-shadow:0 8px 24px rgba(255,111,97,.14)}.sub-item.deleted{opacity:.58;border-left-color:#8d96a4;background:#f4f5f7}.sub-item.deleted .body{text-decoration:line-through}
-.card-trash{position:absolute;left:7px;top:7px;width:28px;height:28px;border:0;border-radius:99px;background:#fff0ed;color:#d74c40;cursor:pointer;font-size:.9rem;z-index:2}.card-trash:hover{background:#ffd9d3}
-.meta{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;font-size:.72rem;color:#7a8799;margin-left:2rem}.tag{font-weight:800;color:#347dcc}.body{white-space:pre-wrap;line-height:1.55;margin:.65rem 0;font-size:.94rem}.row-actions{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
-.mini-btn{border:0;border-radius:10px;padding:.5rem .72rem;background:#eaf2fb;cursor:pointer;font:600 .75rem Poppins}.mini-btn.publish{background:#dff2ff}.mini-btn.restore{background:#e8f7ee;color:#16764a}
-.answer-box{display:none;margin-top:.8rem;padding:.8rem;border-radius:14px;background:#f5faff}.answer-box.show{display:block}.answer-input,.translate-box textarea,.new-board-form textarea,.new-board-form input{width:100%;box-sizing:border-box;border:1px solid #d6e2ef;border-radius:10px;padding:.65rem;font:500 .82rem Poppins}.answer-input{min-height:90px}
-.field-mini,.new-board-form label{display:block;font-size:.72rem;font-weight:700;margin:.35rem 0}.translate-box{display:none;margin-top:.7rem}.translate-box.show{display:block}.lang-pair{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}.lang-col textarea{min-height:80px}.status-line{font-size:.72rem;color:#617086;margin-top:.4rem}
-.new-board-form{background:#fff;border-radius:18px;padding:1rem;margin-top:1rem;box-shadow:0 8px 24px rgba(35,70,120,.08)}.new-board-form textarea{min-height:90px}
-.board-editor-item .answer-box{margin-top:.7rem}.new-badge{background:#ffeadf;color:#d85441;padding:.2rem .4rem;border-radius:99px;font-size:.62rem;font-weight:800}
-.trash-panel-intro{background:#fff8df;border:1px solid #f4d87d;padding:.7rem .85rem;border-radius:14px;font-size:.76rem}
-.warning-float{position:fixed;right:16px;bottom:16px;z-index:200;background:#fff;border:1px solid #f0d27b;border-radius:14px;padding:.55rem .75rem;box-shadow:0 8px 24px rgba(30,50,80,.18);font-size:.7rem;font-weight:700;max-width:250px}.warning-float strong{color:#b97800}
-.dragging{cursor:grabbing!important}.drag-ghost{position:fixed;z-index:9999;pointer-events:none;width:min(420px,calc(100vw - 32px));opacity:.92;transform:rotate(1.5deg) scale(.98);box-shadow:0 20px 45px rgba(20,40,70,.25)}.drop-active{background:#fff0c5!important;box-shadow:0 0 0 4px rgba(255,200,87,.35),0 10px 25px rgba(255,160,50,.2)!important}
-.admin-gate{display:flex;justify-content:center;align-items:center;min-height:100vh;padding:1rem}
-.admin-gate-card{background:#fff;padding:2rem;border-radius:18px;max-width:400px;width:100%;box-shadow:0 8px 24px rgba(35,70,120,.1)}
-.admin-gate-error{color:#d23d3d;font-size:.8rem;margin:.5rem 0;display:none}.admin-gate-error.show{display:block}
-.gate-note{font-size:.75rem;color:#7a8799;margin-top:1rem}
-@media(max-width:650px){.admin-shell{padding:.7rem .7rem 5rem}.connection ul{gap:.5rem}.lang-pair{grid-template-columns:1fr}.admin-tab-btn{flex:1}.trash-main{margin-left:0}.admin-top{align-items:flex-start}.warning-float{right:10px;bottom:10px}}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body class="admin-page">
 
+<!-- ================= LOGIN GATE ================= -->
 <div class="admin-gate" id="gate">
   <div class="admin-gate-card">
     <div class="gate-logo logo-mark" role="img" aria-label="CTG logo"></div>
-    <h1>Student Council Login</h1>
+    <h1 data-i18n="admin_login_title">Student Council Login</h1>
     <form id="gate-form" novalidate>
       <input type="email" id="gate-email" placeholder="Email" autocomplete="username">
       <input type="password" id="gate-password" placeholder="Password" autocomplete="current-password">
       <div class="admin-gate-error" id="gate-error"></div>
-      <button type="submit" class="btn" id="gate-btn" style="width:100%;">Enter</button>
+      <button type="submit" class="btn" id="gate-btn" style="width:100%;" data-i18n="admin_enter">Enter</button>
     </form>
-    <p class="gate-note">Accounts are created in the Firebase console. There is no public sign-up.</p>
+    <p class="gate-note" data-i18n="admin_note">Accounts are created in the Firebase console. There is no public sign-up.</p>
   </div>
 </div>
 
+<!-- ================= ADMIN VIEW ================= -->
 <div class="admin-shell" id="shell">
-  <div class="admin-sticky">
-    <div class="admin-top">
-      <h1>CTG Admin</h1>
-      <div style="display:flex;gap:.5rem;align-items:center">
-        <button class="lang-toggle" type="button"><span data-code="en">EN</span><span data-code="ko">KO</span></button>
-        <button class="logout-link" id="logout">Log out</button>
-      </div>
-    </div>
-    <div class="connection">
-      <strong>Connection check</strong>
-      <ul>
-        <li><span class="wait" id="chk-auth-icon">•</span> Signed in <span id="chk-uid"></span></li>
-        <li><span class="wait" id="chk-board-icon">•</span> <span id="chk-board-text">Reading public board…</span></li>
-        <li><span class="wait" id="chk-subs-icon">•</span> <span id="chk-subs-text">Reading private submissions…</span></li>
-      </ul>
-    </div>
-    <div class="trouble" id="trouble"></div>
-    <div class="admin-tabs" role="tablist">
-      <button class="admin-tab-btn is-active" data-tab="questions">Questions <span class="badge" id="badge-questions">0</span></button>
-      <button class="admin-tab-btn" data-tab="prayers">Prayer requests <span class="badge" id="badge-prayers">0</span></button>
-      <button class="admin-tab-btn" data-tab="board">Board <span class="badge" id="badge-board">0</span></button>
-      <button class="admin-tab-btn" data-tab="trash">Trash <span class="badge" id="badge-trash">0</span></button>
-      <button class="trash-main" id="trash-main" title="Open Trash" aria-label="Open Trash"><span class="lid">🗑️</span></button>
+  <div class="admin-top">
+    <h1 data-i18n="admin_db">Database</h1>
+    <div style="display:flex;gap:0.6rem;align-items:center;">
+      <button class="lang-toggle" type="button" aria-label="Switch language">
+        <span data-code="en">EN</span><span data-code="ko">KO</span>
+      </button>
+      <button class="logout-link" id="logout" data-i18n="admin_logout">Log out</button>
     </div>
   </div>
 
-  <section class="admin-tab-panel is-active" id="panel-questions"><div id="questions-list"></div><p class="empty-note" id="questions-empty" hidden>No new questions right now.</p></section>
-  <section class="admin-tab-panel" id="panel-prayers">
-    <div class="trash-panel-intro">Private only. Opening this tab automatically marks the currently visible requests as seen by you.</div>
-    <div id="prayers-list"></div><p class="empty-note" id="prayers-empty" hidden>No prayer requests right now.</p>
+  <div class="checklist" id="checklist">
+    <strong>Connection check</strong>
+    <ul>
+      <li><span class="wait" id="chk-auth-icon">•</span>
+          <span>Signed in <span id="chk-uid" style="color:var(--text-muted);"></span></span></li>
+      <li><span class="wait" id="chk-board-icon">•</span>
+          <span id="chk-board-text">Reading the public board…</span></li>
+      <li><span class="wait" id="chk-subs-icon">•</span>
+          <span id="chk-subs-text">Reading private submissions…</span></li>
+    </ul>
+  </div>
+
+  <div class="trouble" id="trouble" role="status"></div>
+
+  <div class="admin-tabs" role="tablist">
+    <button class="admin-tab-btn is-active" data-tab="questions" data-i18n="tab_questions">Questions</button>
+    <button class="admin-tab-btn" data-tab="prayers" data-i18n="tab_prayers">Prayer requests</button>
+    <button class="admin-tab-btn" data-tab="board" data-i18n="tab_board">Board</button>
+  </div>
+
+  <!-- ---------------- Questions tab ---------------- -->
+  <section class="admin-tab-panel is-active" id="panel-questions">
+    <div id="questions-list"></div>
+    <p class="empty-note" id="questions-empty" hidden>No new questions right now.</p>
   </section>
+
+  <!-- ---------------- Prayers tab ---------------- -->
+  <section class="admin-tab-panel" id="panel-prayers">
+    <p class="empty-note" style="margin-bottom:0.9rem;">Private only — these are never answered or posted publicly. Check them off once read.</p>
+    <div id="prayers-list"></div>
+    <p class="empty-note" id="prayers-empty" hidden>No prayer requests right now.</p>
+  </section>
+
+  <!-- ---------------- Board tab ---------------- -->
   <section class="admin-tab-panel" id="panel-board">
-    <div id="board-list"></div><p class="empty-note" id="board-empty" hidden>Nothing posted to the board yet.</p>
+    <div id="board-list"></div>
+    <p class="empty-note" id="board-empty" hidden>Nothing posted to the board yet.</p>
+
     <div class="new-board-form">
       <strong>Post something new directly</strong>
-      <label>Question</label><input type="text" id="new-question-raw" placeholder="e.g. How do I start reading the Bible?">
-      <label>Answer</label><textarea id="new-answer-raw" placeholder="The pastor's answer…"></textarea>
-      <div class="row-actions"><button class="mini-btn publish" id="new-translate-btn">Translate &amp; review</button></div>
+      <label for="new-text">Write in either language — it'll be drafted in the other</label>
+      <label style="margin-top:0.9rem;">Question</label>
+      <input type="text" id="new-question-raw" placeholder="e.g. How do I start reading the Bible?">
+      <label>Answer</label>
+      <textarea id="new-answer-raw" placeholder="The pastor's answer…"></textarea>
+      <div class="row-actions" style="margin-top:0.9rem;">
+        <button class="mini-btn publish" id="new-translate-btn">Translate &amp; review</button>
+      </div>
+
       <div class="translate-box" id="new-translate-box">
-        <div class="lang-pair"><div class="lang-col"><label>Question (EN)</label><textarea id="new-q-en"></textarea></div><div class="lang-col"><label>Question (KO)</label><textarea id="new-q-ko"></textarea></div></div>
-        <div class="lang-pair"><div class="lang-col"><label>Answer (EN)</label><textarea id="new-a-en"></textarea></div><div class="lang-col"><label>Answer (KO)</label><textarea id="new-a-ko"></textarea></div></div>
+        <div class="lang-pair">
+          <div class="lang-col"><label>Question (EN)</label><textarea id="new-q-en"></textarea></div>
+          <div class="lang-col"><label>Question (KO)</label><textarea id="new-q-ko"></textarea></div>
+        </div>
+        <div class="lang-pair">
+          <div class="lang-col"><label>Answer (EN)</label><textarea id="new-a-en"></textarea></div>
+          <div class="lang-col"><label>Answer (KO)</label><textarea id="new-a-ko"></textarea></div>
+        </div>
         <div class="status-line" id="new-status"></div>
-        <div class="row-actions"><button class="mini-btn publish" id="new-confirm-btn">Add to board</button></div>
+        <div class="row-actions" style="margin-top:0.6rem;">
+          <button class="mini-btn publish" id="new-confirm-btn">Add to board</button>
+        </div>
       </div>
     </div>
   </section>
-  <section class="admin-tab-panel" id="panel-trash">
-    <div class="trash-panel-intro">Soft-deleted items stay here for 14 days. Opening Trash marks visible deleted items as seen by you. Items older than 14 days are permanently cleaned up automatically when an admin loads the page.</div>
-    <div id="trash-list"></div><p class="empty-note" id="trash-empty" hidden>Trash is empty.</p>
-  </section>
-  <a class="back-link" href="index.html">← Back to public site</a>
-</div>
 
-<div class="warning-float">⚠️ <strong>Tip:</strong> hold a bubble for 3 seconds to drag it. Drop it on 🗑️ to soft-delete.</div>
+  <a class="back-link" href="index.html" style="margin-left:0;" data-i18n="back_public">&larr; Back to public site</a>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -118,201 +115,408 @@ body.admin-page{font-family:Poppins,system-ui,sans-serif;background:#eef7ff;colo
 <script src="app.js"></script>
 <script src="i18n.js"></script>
 <script>
-// --- Helper functions fallback ---
-function escapeHtml(str){if(!str)return'';return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
-function formatDate(dt){if(!dt)return'';const d=dt.toDate?dt.toDate():new Date(dt);return d.toLocaleDateString()}
-function isWithinDays(dt,days){if(!dt)return false;const d=dt.toDate?dt.toDate():new Date(dt);return(Date.now()-d.getTime())<=(days*24*60*60*1000)}
-function showTrouble(id,err){const el=document.getElementById(id);if(el){el.textContent=err.message||err;el.classList.add("show")}}
-function hideTrouble(id){const el=document.getElementById(id);if(el)el.classList.remove("show")}
-function describeFirebaseError(err){return{title:err.message||"Login failed"}}
+  const gate = document.getElementById('gate');
+  const shell = document.getElementById('shell');
+  const gateForm = document.getElementById('gate-form');
+  const gateBtn = document.getElementById('gate-btn');
+  const gateError = document.getElementById('gate-error');
 
-// --- Bilingual Translation Fallback ---
-async function draftBilingual(text){
-  if(typeof window.draftBilingual==='function')return window.draftBilingual(text);
-  return {en:text,ko:text};
-}
+  let unsubSubmissions = null, unsubBoard = null;
 
-const CONFIG_OK=typeof firebase!=='undefined'&&firebase.apps.length>0;
-const gate=document.getElementById("gate"),shell=document.getElementById("shell"),gateForm=document.getElementById("gate-form"),gateBtn=document.getElementById("gate-btn"),gateError=document.getElementById("gate-error");
-let unsubSubmissions=null,unsubBoard=null,allSubmissions=[],allBoard=[],currentTab="questions",holdTimer=null,dragState=null;
+  function mark(id, state, text, textId) {
+    const icon = document.getElementById(id);
+    icon.className = state;
+    icon.textContent = state === 'ok' ? '✓' : state === 'bad' ? '✕' : '•';
+    if (text && textId) document.getElementById(textId).textContent = text;
+  }
 
-function mark(id,state,text,textId){const icon=document.getElementById(id);if(!icon)return;icon.className=state;icon.textContent=state==="ok"?"✓":state==="bad"?"✕":"•";if(text&&textId){const txtEl=document.getElementById(textId);if(txtEl)txtEl.textContent=text}}
-function isUnread(item){const uid=typeof PrayerBoard!=='undefined'?PrayerBoard.currentUid():null;return uid?!(item.seenBy||[]).includes(uid):false}
-function activeItems(items){return items.filter(x=>!x.deleted)}
-function tabData(tab){
-  if(tab==="questions")return activeItems(allSubmissions.filter(x=>x.type==="ask"));
-  if(tab==="prayers")return activeItems(allSubmissions.filter(x=>x.type==="prayer"));
-  if(tab==="board")return activeItems(allBoard);
-  return allSubmissions.filter(x=>x.deleted).map(x=>({...x,_collection:"submissions",_kind:x.type==="ask"?"Question":"Prayer"}))
-    .concat(allBoard.filter(x=>x.deleted).map(x=>({...x,_collection:"board",_kind:"Board"})))
-}
-function updateBadges(){
-  document.getElementById("badge-questions").textContent=activeItems(allSubmissions.filter(x=>x.type==="ask")).filter(isUnread).length;
-  document.getElementById("badge-prayers").textContent=activeItems(allSubmissions.filter(x=>x.type==="prayer")).filter(isUnread).length;
-  document.getElementById("badge-board").textContent=activeItems(allBoard).filter(isUnread).length;
-  document.getElementById("badge-trash").textContent=tabData("trash").filter(isUnread).length;
-}
-async function markCurrentTabSeen(){
-  if(typeof PrayerBoard==='undefined')return;
-  const uid=PrayerBoard.currentUid();if(!uid)return;
-  const items=tabData(currentTab).filter(isUnread);
-  if(currentTab==="questions"||currentTab==="prayers")await PrayerBoard.markManySeen("submissions",items,uid);
-  else if(currentTab==="board")await PrayerBoard.markManySeen("board",items,uid);
-  else await Promise.all([
-    PrayerBoard.markManySeen("submissions",items.filter(x=>x._collection==="submissions"),uid),
-    PrayerBoard.markManySeen("board",items.filter(x=>x._collection==="board"),uid)
-  ]);
-}
-function setTab(tab){
-  currentTab=tab;
-  document.querySelectorAll(".admin-tab-btn").forEach(b=>b.classList.toggle("is-active",b.dataset.tab===tab));
-  document.querySelectorAll(".admin-tab-panel").forEach(p=>p.classList.toggle("is-active",p.id==="panel-"+tab));
-  document.getElementById("trash-main").classList.toggle("open",tab==="trash");
-  markCurrentTabSeen().catch(err=>showTrouble("trouble",err));
-}
-document.querySelectorAll(".admin-tab-btn").forEach(btn=>btn.addEventListener("click",()=>setTab(btn.dataset.tab)));
-document.getElementById("trash-main").addEventListener("click",()=>setTab("trash"));
-document.getElementById("trash-main").addEventListener("mouseenter",()=>document.getElementById("trash-main").classList.add("open"));
-document.getElementById("trash-main").addEventListener("mouseleave",()=>document.getElementById("trash-main").classList.toggle("open",currentTab==="trash"));
-
-function softDelete(collection,id){return PrayerBoard.softDelete(collection,id,PrayerBoard.currentUid()).catch(err=>showTrouble("trouble",err))}
-function attachDrag(card,collection,id){
-  card.addEventListener("pointerdown",e=>{
-    if(e.button!==0||e.target.closest("button,textarea,input"))return;
-    const sx=e.clientX,sy=e.clientY;
-    holdTimer=setTimeout(()=>{
-      dragState={card,collection,id,overTrash:false};
-      const ghost=card.cloneNode(true);ghost.classList.add("drag-ghost");document.body.appendChild(ghost);
-      dragState.ghost=ghost;card.classList.add("dragging");card.style.opacity=".35";moveGhost(e);
-    },3000);
-
-    function watch(ev){
-      if(!dragState&&Math.hypot(ev.clientX-sx,ev.clientY-sy)>18){clearTimeout(holdTimer);holdTimer=null}
-    }
-    function move(ev){if(dragState)moveGhost(ev)}
-    function moveGhost(ev){
-      if(!dragState)return;
-      const g=dragState.ghost;
-      g.style.left=Math.max(8,ev.clientX-g.offsetWidth/2)+"px";
-      g.style.top=Math.max(8,ev.clientY-25)+"px";
-      const r=document.getElementById("trash-main").getBoundingClientRect();
-      const near=ev.clientX>=r.left-18&&ev.clientX<=r.right+18&&ev.clientY>=r.top-18&&ev.clientY<=r.bottom+18;
-      dragState.overTrash=near;
-      document.getElementById("trash-main").classList.toggle("open",near||currentTab==="trash");
-      document.getElementById("trash-main").classList.toggle("drop-active",near);
-    }
-    function finish(ev){
-      clearTimeout(holdTimer);holdTimer=null;
-      document.removeEventListener("pointermove",move);document.removeEventListener("pointerup",finish);
-      if(!dragState)return;
-      const st=dragState;dragState=null;
-      st.ghost.remove();card.classList.remove("dragging");card.style.opacity="";
-      document.getElementById("trash-main").classList.remove("drop-active");
-      document.getElementById("trash-main").classList.toggle("open",currentTab==="trash");
-      if(st.overTrash)softDelete(collection,id);
-    }
-    card.addEventListener("pointermove",watch);
-    document.addEventListener("pointermove",move);
-    document.addEventListener("pointerup",finish);
+  /* ---------------- Tabs ---------------- */
+  document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('is-active'));
+      document.querySelectorAll('.admin-tab-panel').forEach(p => p.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('is-active');
+    });
   });
-}
-function trashButton(id){return '<button class="card-trash" title="Move to Trash" aria-label="Move to Trash" data-trash="'+escapeHtml(id)+'">🗑️</button>'}
 
-function renderSubmissionCard(item){
-  const unread=isUnread(item),type=item.type==="ask"?"Question":"Prayer";
-  return '<article class="sub-item'+(unread?" unread":"")+'" data-id="'+escapeHtml(item.id)+'">'+trashButton(item.id)+
-    '<div class="meta"><span class="tag">'+type+'</span><span>'+(item.name?escapeHtml(item.name):"Anonymous")+'</span><span>·</span><span>'+formatDate(item.date)+'</span></div>'+
-    '<div class="body">'+escapeHtml(item.message)+'</div>'+
-    (item.type==="ask"?'<div class="row-actions"><button class="mini-btn publish" data-action="open-answer">Answer &amp; post to board</button></div>'+
-    '<div class="answer-box"><label class="field-mini">The pastor\'s answer (either language)</label><textarea class="answer-input" placeholder="Write the answer…"></textarea>'+
-    '<div class="row-actions"><button class="mini-btn publish" data-action="translate">Translate &amp; review</button><button class="mini-btn" data-action="cancel-answer">Cancel</button></div>'+
-    '<div class="translate-box"><div class="lang-pair"><div class="lang-col"><label>Question (EN)</label><textarea class="tq-en"></textarea></div><div class="lang-col"><label>Question (KO)</label><textarea class="tq-ko"></textarea></div></div>'+
-    '<div class="lang-pair"><div class="lang-col"><label>Answer (EN)</label><textarea class="ta-en"></textarea></div><div class="lang-col"><label>Answer (KO)</label><textarea class="ta-ko"></textarea></div></div>'+
-    '<div class="status-line"></div><div class="row-actions"><button class="mini-btn publish" data-action="confirm-post">Confirm &amp; post to board</button></div></div></div>':'')+
-    '</article>';
-}
-function wireSubmissionCards(list){
-  list.querySelectorAll(".sub-item").forEach(c=>attachDrag(c,"submissions",c.dataset.id));
-  list.querySelectorAll("[data-trash]").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();softDelete("submissions",b.dataset.trash)}));
-  list.querySelectorAll('[data-action="open-answer"]').forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();b.closest(".sub-item").querySelector(".answer-box").classList.add("show")}));
-  list.querySelectorAll('[data-action="cancel-answer"]').forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();b.closest(".answer-box").classList.remove("show")}));
-  list.querySelectorAll('[data-action="translate"]').forEach(b=>b.addEventListener("click",async e=>{
-    e.stopPropagation();
-    const card=b.closest(".sub-item"),box=card.querySelector(".answer-box"),answer=box.querySelector(".answer-input").value;
-    if(!answer.trim()){alert("Write an answer before translating.");return}
-    const t=box.querySelector(".translate-box"),s=t.querySelector(".status-line");b.disabled=true;s.textContent="Translating…";
-    try{const item=allSubmissions.find(x=>x.id===card.dataset.id);const [q,a]=await Promise.all([draftBilingual(item.message),draftBilingual(answer)]);t.querySelector(".tq-en").value=q.en;t.querySelector(".tq-ko").value=q.ko;t.querySelector(".ta-en").value=a.en;t.querySelector(".ta-ko").value=a.ko;t.classList.add("show");s.textContent="Draft ready — review before posting."}
-    catch(err){s.textContent="Translation failed: "+err.message;t.classList.add("show")}finally{b.disabled=false}
-  }));
-  list.querySelectorAll('[data-action="confirm-post"]').forEach(b=>b.addEventListener("click",async e=>{
-    e.stopPropagation();const c=b.closest(".sub-item"),t=c.querySelector(".translate-box");
-    const p={question_en:t.querySelector(".tq-en").value,question_ko:t.querySelector(".tq-ko").value,answer_en:t.querySelector(".ta-en").value,answer_ko:t.querySelector(".ta-ko").value};
-    if(!p.answer_en.trim()&&!p.answer_ko.trim()){alert("At least one answer field needs text.");return}
-    try{await PrayerBoard.publishSubmissionToBoard(c.dataset.id,p)}catch(err){showTrouble("trouble",err)}
-  }));
-}
-function renderQuestions(){
-  const items=activeItems(allSubmissions.filter(x=>x.type==="ask")),l=document.getElementById("questions-list"),e=document.getElementById("questions-empty");
-  l.innerHTML=items.map(renderSubmissionCard).join("");e.hidden=items.length>0;wireSubmissionCards(l);
-}
-function renderPrayers(){
-  const items=activeItems(allSubmissions.filter(x=>x.type==="prayer")),l=document.getElementById("prayers-list"),e=document.getElementById("prayers-empty");
-  l.innerHTML=items.map(renderSubmissionCard).join("");e.hidden=items.length>0;wireSubmissionCards(l);
-}
-function renderBoard(){
-  const items=activeItems(allBoard),l=document.getElementById("board-list"),e=document.getElementById("board-empty");
-  l.innerHTML=items.map(i=>'<article class="sub-item'+(isUnread(i)?" unread":"")+'" data-id="'+escapeHtml(i.id)+'">'+trashButton(i.id)+
-    '<div class="meta"><span class="tag">Board</span>'+(isWithinDays(i.date,7)?'<span class="new-badge">New</span>': '')+'<span>'+formatDate(i.date)+'</span></div>'+
-    '<div class="body"><strong>'+escapeHtml(i.question_en||i.question_ko||"(no question text)")+'</strong><br>'+escapeHtml(i.answer_en||i.answer_ko||"")+'</div>'+
-    '<div class="row-actions"><button class="mini-btn" data-action="edit">Edit</button></div>'+
-    '<div class="answer-box"><div class="lang-pair"><div class="lang-col"><label>Question (EN)</label><textarea class="edit-q-en">'+escapeHtml(i.question_en)+'</textarea></div><div class="lang-col"><label>Question (KO)</label><textarea class="edit-q-ko">'+escapeHtml(i.question_ko)+'</textarea></div></div>'+
-    '<div class="lang-pair"><div class="lang-col"><label>Answer (EN)</label><textarea class="edit-a-en">'+escapeHtml(i.answer_en)+'</textarea></div><div class="lang-col"><label>Answer (KO)</label><textarea class="edit-a-ko">'+escapeHtml(i.answer_ko)+'</textarea></div></div>'+
-    '<div class="row-actions"><button class="mini-btn publish" data-action="save">Save changes</button></div></div></article>').join("");
-  e.hidden=items.length>0;
-  l.querySelectorAll(".sub-item").forEach(c=>attachDrag(c,"board",c.dataset.id));
-  l.querySelectorAll("[data-trash]").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();softDelete("board",b.dataset.trash)}));
-  l.querySelectorAll('[data-action="edit"]').forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();b.closest(".sub-item").querySelector(".answer-box").classList.add("show")}));
-  l.querySelectorAll('[data-action="save"]').forEach(b=>b.addEventListener("click",async e=>{
-    e.stopPropagation();const c=b.closest(".sub-item");
-    try{await PrayerBoard.updateBoardEntry(c.dataset.id,{question_en:c.querySelector(".edit-q-en").value,question_ko:c.querySelector(".edit-q-ko").value,answer_en:c.querySelector(".edit-a-en").value,answer_ko:c.querySelector(".edit-a-ko").value});b.textContent="Saved";setTimeout(()=>b.textContent="Save changes",1200)}catch(err){showTrouble("trouble",err)}
-  }));
-}
-function renderTrash(){
-  const items=tabData("trash"),l=document.getElementById("trash-list"),e=document.getElementById("trash-empty");
-  l.innerHTML=items.map(i=>{
-    const text=i._collection==="board"?(i.question_en||i.question_ko||"(no question)"):(i.message||"");
-    return '<article class="sub-item deleted" data-id="'+escapeHtml(i.id)+'"><div class="meta"><span class="tag">'+i._kind+'</span><span>Deleted '+formatDate(i.deletedAt)+'</span></div><div class="body">'+escapeHtml(text)+'</div><div class="row-actions"><button class="mini-btn restore" data-action="restore">Restore</button><button class="mini-btn" data-action="purge">Delete permanently</button></div></article>';
-  }).join("");
-  e.hidden=items.length>0;
-  l.querySelectorAll('[data-action="restore"]').forEach(b=>b.addEventListener("click",()=>{const c=b.closest(".sub-item"),i=items.find(x=>x.id===c.dataset.id);PrayerBoard.restore(i._collection,i.id).catch(err=>showTrouble("trouble",err))}));
-  l.querySelectorAll('[data-action="purge"]').forEach(b=>b.addEventListener("click",()=>{const c=b.closest(".sub-item"),i=items.find(x=>x.id===c.dataset.id);if(confirm("Permanently delete this item? This cannot be undone."))PrayerBoard.permanentlyDelete(i._collection,i.id).catch(err=>showTrouble("trouble",err))}));
-}
-function renderAll(){renderQuestions();renderPrayers();renderBoard();renderTrash();updateBadges()}
-async function purgeExpired(){try{await PrayerBoard.purgeExpiredDeleted("submissions",allSubmissions);await PrayerBoard.purgeExpiredDeleted("board",allBoard)}catch(err){console.warn("[CTG] 14-day cleanup failed",err)}}
-function startListening(){
-  unsubSubmissions=PrayerBoard.onSubmissions(all=>{allSubmissions=all;mark("chk-subs-icon","ok","Private submissions: readable","chk-subs-text");hideTrouble("trouble");renderAll()},err=>{mark("chk-subs-icon","bad","Private submissions: blocked","chk-subs-text");showTrouble("trouble",err)});
-  unsubBoard=PrayerBoard.onBoard(all=>{allBoard=all;mark("chk-board-icon","ok","Public board: readable","chk-board-text");renderAll()},err=>{mark("chk-board-icon","bad","Public board: blocked","chk-board-text");showTrouble("trouble",err)});
-  setTimeout(purgeExpired,2000);
-}
-function stopListening(){if(unsubSubmissions)unsubSubmissions();if(unsubBoard)unsubBoard();unsubSubmissions=unsubBoard=null}
-function showAdmin(user){gate.style.display="none";shell.classList.add("show");mark("chk-auth-icon","ok");document.getElementById("chk-uid").textContent="("+user.uid+")";startListening()}
-function showGate(){stopListening();shell.classList.remove("show");gate.style.display="flex"}
-if(CONFIG_OK&&typeof PrayerBoard!=='undefined')PrayerBoard.onAuthChange(user=>user?showAdmin(user):showGate());
-gateForm.addEventListener("submit",async e=>{e.preventDefault();gateBtn.disabled=true;gateError.classList.remove("show");try{await PrayerBoard.signIn(document.getElementById("gate-email").value.trim(),document.getElementById("gate-password").value)}catch(err){gateError.textContent=describeFirebaseError(err).title;gateError.classList.add("show")}finally{gateBtn.disabled=false;gateBtn.textContent="Enter"}});
-document.getElementById("logout").addEventListener("click",()=>PrayerBoard.signOut());
+  /* ---------------- Auth / listeners ---------------- */
 
-document.getElementById("new-translate-btn").addEventListener("click",async()=>{
-  const q=document.getElementById("new-question-raw").value,a=document.getElementById("new-answer-raw").value;
-  if(!q.trim()||!a.trim()){alert("Fill in both the question and answer first.");return}
-  const box=document.getElementById("new-translate-box"),s=document.getElementById("new-status"),b=document.getElementById("new-translate-btn");b.disabled=true;s.textContent="Translating…";
-  try{const [qd,ad]=await Promise.all([draftBilingual(q),draftBilingual(a)]);document.getElementById("new-q-en").value=qd.en;document.getElementById("new-q-ko").value=qd.ko;document.getElementById("new-a-en").value=ad.en;document.getElementById("new-a-ko").value=ad.ko;box.classList.add("show");s.textContent="Draft ready — review and edit before adding."}
-  catch(err){s.textContent="Translation failed: "+err.message;box.classList.add("show")}finally{b.disabled=false}
-});
-document.getElementById("new-confirm-btn").addEventListener("click",async()=>{
-  const p={question_en:document.getElementById("new-q-en").value,question_ko:document.getElementById("new-q-ko").value,answer_en:document.getElementById("new-a-en").value,answer_ko:document.getElementById("new-a-ko").value};
-  if((!p.question_en.trim()&&!p.question_ko.trim())||(!p.answer_en.trim()&&!p.answer_ko.trim())){alert("Question and answer are required.");return}
-  try{await PrayerBoard.addBoardEntry(p);document.getElementById("new-question-raw").value="";document.getElementById("new-answer-raw").value="";document.getElementById("new-translate-box").classList.remove("show")}catch(err){showTrouble("trouble",err)}
-});
+  function startListening() {
+    unsubSubmissions = PrayerBoard.onSubmissions(
+      all => {
+        mark('chk-subs-icon', 'ok', 'Private submissions: readable', 'chk-subs-text');
+        hideTrouble('trouble');
+        renderQuestions(all.filter(s => s.type === 'ask'));
+        renderPrayers(all.filter(s => s.type === 'prayer'));
+      },
+      err => { mark('chk-subs-icon', 'bad', 'Private submissions: blocked', 'chk-subs-text'); showTrouble('trouble', err); }
+    );
+
+    unsubBoard = PrayerBoard.onBoard(
+      items => { mark('chk-board-icon', 'ok', 'Public board: readable', 'chk-board-text'); renderBoard(items); },
+      err => { mark('chk-board-icon', 'bad', 'Public board: blocked', 'chk-board-text'); showTrouble('trouble', err); }
+    );
+  }
+
+  function stopListening() {
+    if (unsubSubmissions) unsubSubmissions();
+    if (unsubBoard) unsubBoard();
+    unsubSubmissions = unsubBoard = null;
+  }
+
+  function showAdmin(user) {
+    gate.style.display = 'none';
+    shell.classList.add('show');
+    mark('chk-auth-icon', 'ok');
+    document.getElementById('chk-uid').textContent = '(UID ' + user.uid + ')';
+    startListening();
+  }
+
+  function showGate() {
+    stopListening();
+    shell.classList.remove('show');
+    gate.style.display = 'flex';
+  }
+
+  if (CONFIG_OK) {
+    PrayerBoard.onAuthChange(user => { if (user) showAdmin(user); else showGate(); });
+  } else {
+    gateError.textContent = 'firebase-config.js did not load. Check that it is in this folder.';
+    gateError.classList.add('show');
+  }
+
+  gateForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('gate-email').value.trim();
+    const password = document.getElementById('gate-password').value;
+    gateError.classList.remove('show');
+    gateBtn.disabled = true;
+    gateBtn.textContent = 'Checking…';
+    try {
+      await PrayerBoard.signIn(email, password);
+    } catch (err) {
+      console.error('[CTG]', err);
+      const c = err.code || '';
+      gateError.textContent =
+        (c === 'auth/invalid-credential' || c === 'auth/wrong-password' || c === 'auth/user-not-found')
+          ? "Email or password isn't right. Try again."
+        : (c === 'auth/operation-not-allowed')
+          ? 'Email/password sign-in is still switched off in the Firebase console.'
+        : (c === 'auth/network-request-failed')
+          ? "Couldn't reach Firebase. Check your connection."
+        : (describeFirebaseError(err).title + ' (' + c + ')');
+      gateError.classList.add('show');
+    } finally {
+      gateBtn.disabled = false;
+      gateBtn.textContent = 'Enter';
+    }
+  });
+
+  document.getElementById('logout').addEventListener('click', () => PrayerBoard.signOut());
+
+  /* ---------------- Questions ---------------- */
+
+  function renderQuestions(items) {
+    const list = document.getElementById('questions-list');
+    const empty = document.getElementById('questions-empty');
+
+    if (!items.length) { list.innerHTML = ''; empty.hidden = false; return; }
+    empty.hidden = true;
+
+    list.innerHTML = items.map(item => `
+      <div class="sub-item" data-id="${item.id}" data-question="${escapeHtml(item.message)}">
+        <div class="meta">
+          <span class="tag">Question</span>
+          <span>${item.name ? escapeHtml(item.name) : 'Anonymous'}</span>
+          <span>&middot;</span>
+          <span>${formatDate(item.date)}</span>
+        </div>
+        <div class="body">${escapeHtml(item.message)}</div>
+        <div class="row-actions">
+          <button class="mini-btn publish" data-action="open-answer">Answer &amp; post to board</button>
+          <button class="mini-btn" data-action="delete">Delete</button>
+        </div>
+        <div class="answer-box">
+          <label class="field-mini">The pastor's answer (either language)</label>
+          <textarea class="answer-input" placeholder="Write the answer…"></textarea>
+          <div class="row-actions">
+            <button class="mini-btn publish" data-action="translate">Translate &amp; review</button>
+            <button class="mini-btn" data-action="cancel-answer">Cancel</button>
+          </div>
+          <div class="translate-box">
+            <div class="lang-pair">
+              <div class="lang-col"><label>Question (EN)</label><textarea class="tq-en"></textarea></div>
+              <div class="lang-col"><label>Question (KO)</label><textarea class="tq-ko"></textarea></div>
+            </div>
+            <div class="lang-pair">
+              <div class="lang-col"><label>Answer (EN)</label><textarea class="ta-en"></textarea></div>
+              <div class="lang-col"><label>Answer (KO)</label><textarea class="ta-ko"></textarea></div>
+            </div>
+            <div class="status-line"></div>
+            <div class="row-actions" style="margin-top:0.6rem;">
+              <button class="mini-btn publish" data-action="confirm-post">Confirm &amp; post to board</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    list.querySelectorAll('[data-action="open-answer"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const box = btn.closest('.sub-item').querySelector('.answer-box');
+        box.classList.add('show');
+        box.querySelector('.answer-input').focus();
+      });
+    });
+
+    list.querySelectorAll('[data-action="cancel-answer"]').forEach(btn => {
+      btn.addEventListener('click', () => btn.closest('.answer-box').classList.remove('show'));
+    });
+
+    list.querySelectorAll('[data-action="translate"]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const card = btn.closest('.sub-item');
+        const box = card.querySelector('.answer-box');
+        const answerText = box.querySelector('.answer-input').value;
+        if (!answerText.trim()) { alert('Write an answer before translating.'); return; }
+
+        const tbox = box.querySelector('.translate-box');
+        const status = tbox.querySelector('.status-line');
+        btn.disabled = true;
+        status.textContent = 'Translating…';
+        status.classList.remove('err');
+        try {
+          const [qd, ad] = await Promise.all([
+            draftBilingual(card.dataset.question),
+            draftBilingual(answerText),
+          ]);
+          tbox.querySelector('.tq-en').value = qd.en;
+          tbox.querySelector('.tq-ko').value = qd.ko;
+          tbox.querySelector('.ta-en').value = ad.en;
+          tbox.querySelector('.ta-ko').value = ad.ko;
+          tbox.classList.add('show');
+          status.textContent = 'Draft ready — review and edit before posting.';
+        } catch (err) {
+          status.textContent = 'Translation failed: ' + err.message + '. You can type both languages in by hand below.';
+          status.classList.add('err');
+          tbox.classList.add('show');
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    });
+
+    list.querySelectorAll('[data-action="confirm-post"]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const card = btn.closest('.sub-item');
+        const tbox = card.querySelector('.translate-box');
+        const payload = {
+          question_en: tbox.querySelector('.tq-en').value,
+          question_ko: tbox.querySelector('.tq-ko').value,
+          answer_en: tbox.querySelector('.ta-en').value,
+          answer_ko: tbox.querySelector('.ta-ko').value,
+        };
+        if (!payload.answer_en.trim() && !payload.answer_ko.trim()) {
+          alert('At least one answer field needs text.'); return;
+        }
+        btn.disabled = true;
+        btn.textContent = 'Posting…';
+        try {
+          await PrayerBoard.publishSubmissionToBoard(card.dataset.id, payload);
+        } catch (err) {
+          showTrouble('trouble', err);
+          btn.disabled = false;
+          btn.textContent = 'Confirm & post to board';
+        }
+      });
+    });
+
+    list.querySelectorAll('[data-action="delete"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.closest('.sub-item').dataset.id;
+        if (confirm('Delete this question? This cannot be undone.')) {
+          PrayerBoard.deleteSubmission(id).catch(err => showTrouble('trouble', err));
+        }
+      });
+    });
+  }
+
+  /* ---------------- Prayer requests ---------------- */
+
+  function renderPrayers(items) {
+    const list = document.getElementById('prayers-list');
+    const empty = document.getElementById('prayers-empty');
+
+    if (!items.length) { list.innerHTML = ''; empty.hidden = false; return; }
+    empty.hidden = true;
+
+    list.innerHTML = items.map(item => `
+      <div class="sub-item ${item.seen ? 'is-seen' : ''}" data-id="${item.id}">
+        <div class="meta">
+          <span class="tag">Prayer</span>
+          <span>${item.name ? escapeHtml(item.name) : 'Anonymous'}</span>
+          <span>&middot;</span>
+          <span>${formatDate(item.date)}</span>
+        </div>
+        <div class="body">${escapeHtml(item.message)}</div>
+        <div class="row-actions">
+          <label class="seen-checkbox">
+            <input type="checkbox" data-action="seen" ${item.seen ? 'checked' : ''}>
+            Seen
+          </label>
+          <button class="mini-btn" data-action="delete">Delete</button>
+        </div>
+      </div>
+    `).join('');
+
+    list.querySelectorAll('[data-action="seen"]').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const id = cb.closest('.sub-item').dataset.id;
+        PrayerBoard.setSubmissionSeen(id, cb.checked).catch(err => showTrouble('trouble', err));
+      });
+    });
+
+    list.querySelectorAll('[data-action="delete"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.closest('.sub-item').dataset.id;
+        if (confirm('Delete this prayer request? This cannot be undone.')) {
+          PrayerBoard.deleteSubmission(id).catch(err => showTrouble('trouble', err));
+        }
+      });
+    });
+  }
+
+  /* ---------------- Board tab: existing entries editor ---------------- */
+
+  function renderBoard(items) {
+    const list = document.getElementById('board-list');
+    const empty = document.getElementById('board-empty');
+
+    if (!items.length) { list.innerHTML = ''; empty.hidden = false; return; }
+    empty.hidden = true;
+
+    list.innerHTML = items.map(item => `
+      <div class="sub-item board-editor-item" data-id="${item.id}" data-open="false">
+        <button class="board-item-toggle" type="button" aria-expanded="false">
+          <span class="ledger-caret" aria-hidden="true">&#9656;</span>
+          <span class="board-item-preview">${escapeHtml(item.question_en || item.question_ko || '(no question text)')}</span>
+          ${isWithinDays(item.date, 7) ? '<span class="new-badge">New</span>' : ''}
+          <span class="board-item-date">${formatDate(item.date)}</span>
+        </button>
+
+        <div class="board-item-fields">
+          <div class="lang-pair">
+            <div class="lang-col">
+              <label class="field-mini">Question (EN)</label>
+              <textarea class="edit-q-en">${escapeHtml(item.question_en)}</textarea>
+            </div>
+            <div class="lang-col">
+              <label class="field-mini">Question (KO)</label>
+              <textarea class="edit-q-ko">${escapeHtml(item.question_ko)}</textarea>
+            </div>
+          </div>
+          <div class="lang-pair" style="margin-top:0.6rem;">
+            <div class="lang-col">
+              <label class="field-mini">Answer (EN)</label>
+              <textarea class="edit-a-en">${escapeHtml(item.answer_en)}</textarea>
+            </div>
+            <div class="lang-col">
+              <label class="field-mini">Answer (KO)</label>
+              <textarea class="edit-a-ko">${escapeHtml(item.answer_ko)}</textarea>
+            </div>
+          </div>
+
+          <div class="row-actions" style="margin-top:0.7rem;">
+            <button class="mini-btn publish" data-action="save">Save changes</button>
+            <button class="mini-btn" data-action="delete">Remove from board</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    list.querySelectorAll('.board-item-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.board-editor-item');
+        const isOpen = card.getAttribute('data-open') === 'true';
+        card.setAttribute('data-open', String(!isOpen));
+        btn.setAttribute('aria-expanded', String(!isOpen));
+      });
+    });
+
+    list.querySelectorAll('[data-action="save"]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const card = btn.closest('.board-editor-item');
+        try {
+          await PrayerBoard.updateBoardEntry(card.dataset.id, {
+            question_en: card.querySelector('.edit-q-en').value,
+            question_ko: card.querySelector('.edit-q-ko').value,
+            answer_en: card.querySelector('.edit-a-en').value,
+            answer_ko: card.querySelector('.edit-a-ko').value,
+          });
+          btn.textContent = 'Saved';
+          setTimeout(() => btn.textContent = 'Save changes', 1200);
+        } catch (err) { showTrouble('trouble', err); }
+      });
+    });
+
+    list.querySelectorAll('[data-action="delete"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.closest('.board-editor-item').dataset.id;
+        if (confirm('Remove this from the public board?')) {
+          PrayerBoard.deleteBoardEntry(id).catch(err => showTrouble('trouble', err));
+        }
+      });
+    });
+  }
+
+  /* ---------------- Board tab: post new directly ---------------- */
+
+  document.getElementById('new-translate-btn').addEventListener('click', async () => {
+    const qRaw = document.getElementById('new-question-raw').value;
+    const aRaw = document.getElementById('new-answer-raw').value;
+    if (!qRaw.trim() || !aRaw.trim()) { alert('Fill in both the question and the answer first.'); return; }
+
+    const box = document.getElementById('new-translate-box');
+    const status = document.getElementById('new-status');
+    const btn = document.getElementById('new-translate-btn');
+    btn.disabled = true;
+    status.textContent = 'Translating…';
+    status.classList.remove('err');
+    try {
+      const [qd, ad] = await Promise.all([draftBilingual(qRaw), draftBilingual(aRaw)]);
+      document.getElementById('new-q-en').value = qd.en;
+      document.getElementById('new-q-ko').value = qd.ko;
+      document.getElementById('new-a-en').value = ad.en;
+      document.getElementById('new-a-ko').value = ad.ko;
+      box.classList.add('show');
+      status.textContent = 'Draft ready — review and edit before adding.';
+    } catch (err) {
+      status.textContent = 'Translation failed: ' + err.message + '. You can type both languages in by hand below.';
+      status.classList.add('err');
+      box.classList.add('show');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  document.getElementById('new-confirm-btn').addEventListener('click', async () => {
+    const payload = {
+      question_en: document.getElementById('new-q-en').value,
+      question_ko: document.getElementById('new-q-ko').value,
+      answer_en: document.getElementById('new-a-en').value,
+      answer_ko: document.getElementById('new-a-ko').value,
+    };
+    if (!payload.question_en.trim() && !payload.question_ko.trim()) { alert('Question needs text in at least one language.'); return; }
+    if (!payload.answer_en.trim() && !payload.answer_ko.trim()) { alert('Answer needs text in at least one language.'); return; }
+    try {
+      await PrayerBoard.addBoardEntry(payload);
+      document.getElementById('new-question-raw').value = '';
+      document.getElementById('new-answer-raw').value = '';
+      document.getElementById('new-translate-box').classList.remove('show');
+      document.getElementById('new-status').textContent = '';
+    } catch (err) { showTrouble('trouble', err); }
+  });
 </script>
 </body>
 </html>
