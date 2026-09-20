@@ -1,21 +1,6 @@
 # CTG — 17th Student Council site
 
-## What's new in this version
-
-- **Home and Answers are now separate pages.** The home page only shows board answers from the last 7 days; if nothing's new, it shows a link to `answers.html` instead of an empty box. `answers.html` holds the full, searchable history — nothing is ever deleted from there, it just ages off the home page.
-- **The admin panel is now tabbed** — Questions / Prayer requests / Board — instead of one long scroll.
-- **A language toggle (EN / KO)** sits in the nav on every public page. It remembers your choice (stored in the browser, not the database) and applies instantly, no reload.
-- **Board answers are now bilingual.** When an admin publishes a question or adds something directly, they type it in *either* language, click **Translate & review**, and a machine-translated draft of the other language appears — editable before anything goes live. Nothing is ever posted pre-translation without a chance to fix it.
-
-### A note on the translation
-The draft comes from a free translation API (MyMemory) called directly from the browser — no signup needed for normal use. It's a solid first draft, not a professional translation, which is exactly why admins review and can edit both fields before publishing. If your Facebook page needs a nicer translation for something important, feel free to hand-edit either box before hitting the final button — nothing saves until you do.
-
-One limit: the free tier allows roughly 5,000 characters translated per day per visitor IP (about 50,000/day if you add a contact email — see the `translateText` function in `app.js` if you ever want to add one). A student council's normal usage should stay well under this.
-
-### A note on old board entries
-If you had entries on the board from before this update, they only had one language. They'll still display correctly — the code shows the same text in both EN and KO for those until an admin edits them with a real translation.
-
-## Two things were broken before, and both are fixed
+## Two things were broken, and both are fixed
 
 **The logo wasn't showing** because there was no image file in the folder at all — the zip contained only the eight code files, so `gtc-logo.png` was a dead link on every page. The logo is now embedded *inside* `styles.css` as data, so it draws itself with nothing to download. `gtc-logo.png` and `favicon.png` are also included for the browser tab.
 
